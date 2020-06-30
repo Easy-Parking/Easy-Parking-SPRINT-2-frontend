@@ -20,8 +20,6 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
 
 import { Redirect } from 'react-router-dom';
 import Cookies from 'js-cookie';
@@ -114,24 +112,6 @@ class Login extends Component {
                     />
                   </FormControl>
 
-                  <FormControl variant="outlined" className={classes.margin, classes.textField}>
-                    <InputLabel id="demo-simple-select-outlined-label">Rol</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-outlined-label"
-                      id="demo-simple-select-outlined"
-                      name="rol"
-                      label="Rol"
-                      value={this.state.rol}
-                      onChange={this.handleChange}
-                    >
-                      <MenuItem value="">
-                        <em>None</em>
-                      </MenuItem>
-                      <MenuItem value={"administrador"}>Administrador</MenuItem>
-                      <MenuItem value={"usuario_normal"}>Usuario Normal</MenuItem>
-                    </Select>
-                  </FormControl>
-
                   <FormControlLabel
                     control={<Checkbox value="remember" color="primary" />}
                     label="Remember me"
@@ -146,13 +126,8 @@ class Login extends Component {
                     Sign In
                             </Button>
                   <Grid container>
-                    <Grid item xs>
-                      <Link href="#" variant="body2">
-                        Forgot password?
-                                    </Link>
-                    </Grid>
                     <Grid item>
-                      <Link href="#" variant="body2">
+                      <Link href="/signup" variant="body2" className={classes.link}>
                         {"Don't have an account? Sign Up"}
                       </Link>
                     </Grid>
@@ -165,35 +140,38 @@ class Login extends Component {
     }
 }
 
-const styles = theme=> ({
-    paper: {
-      marginTop: theme.spacing(8),
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-    },
-    avatar: {
-      margin: theme.spacing(1),
-      backgroundColor: '#7C00C8',
-    },
-    form: {
-      width: '100%', // Fix IE 11 issue.
-      marginTop: theme.spacing(1),
-    },
-    submit: {
-      margin: theme.spacing(3, 0, 2),
-    },
-    margin: {
-        margin: theme.spacing(1),
-    },
-    textField: {
-        width: '100%',
-        marginTop: theme.spacing(1),
-    },
-    formControl: {
-        width: '100%',
-        marginTop: theme.spacing(1),
-    },
-  });
+const styles = theme => ({
+  paper: {
+    marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: '#7C00C8',
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+  margin: {
+    margin: theme.spacing(1),
+  },
+  textField: {
+    width: '100%',
+    marginTop: theme.spacing(1),
+  },
+  formControl: {
+    width: '100%',
+    marginTop: theme.spacing(1),
+  },
+  link: {
+    color: "white",
+  }
+});
 
 export default withStyles(styles, { withTheme: true })(Login);
