@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 
+import Swal from 'sweetalert2';
+import axios from 'axios';
+
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -33,7 +36,6 @@ class Login extends Component {
         super(props);
         this.state = {
             authenticated: false,
-            toSignup: false,
             email: "",
             password: "",
             showPassword: false,
@@ -42,6 +44,7 @@ class Login extends Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleClickShowPassword = this.handleClickShowPassword.bind(this);
         this.handleMouseDownPassword = this.handleMouseDownPassword.bind(this);
+        this.loginUser = this.loginUser.bind(this);
 
     }
 
@@ -57,10 +60,58 @@ class Login extends Component {
         event.preventDefault();
     }
 
+    async loginUser() {
+      if (this.state.email === "" &&
+          this.state.password === "") {
+          Swal.fire("Empty field!", "Please, fill all the fields", "error");
+      } else {
+          if (this.state.email.includes('@')) {
+              if (this.state.password.length >= 6) {
+                  let res = await axios.get('https://backend-easyparking.herokuapp.com/users/byEmail/'+this.state.email)
+                    .then(response => {
+                      console.log(response.status);
+                      console.log(response.data);
+                        if(response.status===200){
+                          Cookies.set('user', response.data);
+                          Swal.fire(
+                              'Bienvenido '+response.data.name,
+                              'Sera redireccionado al dashboar de '+response.data.rol,
+                              'success'
+                          ).then(function (result)  {
+                              if (result.value) {
+                                  
+                              }
+                            });
+                            
+                        }else{
+                          Swal.fire("Signup failed!", "try again later", "error");
+                        }
+                      
+                    },
+                    this.setState({ authenticated: true })
+                    )
+                    .catch(function (error) {
+                      console.log(error);
+                    });
+              } else {
+                  Swal.fire("Short password!", "The password should be at least 6 digits", "error");
+              }
+          } else {
+              Swal.fire("Not an email!", "Please, type a correct email", "error");
+          }
+      }
+
+      
+
+  }
+
+
+
     render() {
         const { classes } = this.props;
         return (
           <div>
+            {this.state.authenticated && <Redirect to='/adminpage'></Redirect>}
             <ParticlesBg color="#7C00C8" type="circle" bg={true} />
             <Container component="main" maxWidth="xs">
               <CssBaseline />
@@ -117,11 +168,11 @@ class Login extends Component {
                     label="Remember me"
                   />
                   <Button
-                    type="submit"
                     fullWidth
                     variant="contained"
                     color="primary"
                     className={classes.submit}
+                    onClick={this.loginUser}
                   >
                     Sign In
                             </Button>

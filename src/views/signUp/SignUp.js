@@ -220,7 +220,7 @@ class SignUp extends Component {
                                             <em>None</em>
                                         </MenuItem>
                                         <MenuItem value={"administrador"}>Administrador</MenuItem>
-                                        <MenuItem value={"usuario_normal"}>Usuario Normal</MenuItem>
+                                        <MenuItem value={"usuario normal"}>Usuario Normal</MenuItem>
                                     </Select>
                                 </FormControl>
 
