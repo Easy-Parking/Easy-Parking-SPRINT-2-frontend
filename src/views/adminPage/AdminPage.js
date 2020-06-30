@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import clsx from 'clsx';
+
+import DraggableLayouts from "../../components/parkingDraggable/DraggableLayouts";
+
 import ParticlesBg from 'particles-bg';
 
 import Cookies from 'js-cookie';
@@ -8,6 +12,23 @@ import { withStyles } from "@material-ui/core/styles";
 
 import Button from '@material-ui/core/Button';
 
+
+import Drawer from '@material-ui/core/Drawer';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import List from '@material-ui/core/List';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import InboxIcon from '@material-ui/icons/MoveToInbox';
+import MailIcon from '@material-ui/icons/Mail';
 
 
 class AdminPage extends Component {
@@ -21,10 +42,13 @@ class AdminPage extends Component {
             password: "",
             open: false
         }
+
+        this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
+        this.handleDrawerClose = this.handleDrawerClose.bind(this);
     }
 
     componentDidMount() {
-        const validateSession = Cookies.getJSON('user');
+/*         const validateSession = Cookies.getJSON('user');
         if (!validateSession) {
             return (
                 <Redirect to='/'></Redirect>
@@ -32,46 +56,165 @@ class AdminPage extends Component {
         } else {
             console.log("email:", this.state.email);
             console.log("Access granted, session active!");
-        }
+        } */
     }
 
+
+
+    handleDrawerOpen() {
+        this.setState({ open: true });
+    };
+
+    handleDrawerClose() {
+        this.setState({ open: false });
+    };
   
 
 
     render() {
         const { classes } = this.props;
         return (
+            <div className={classes.root}>
+            <CssBaseline />
+            <AppBar
+              position="fixed"
+              className={clsx(classes.appBar, {
+                [classes.appBarShift]: this.state.open,
+              })}
+            >
+              <Toolbar>
+                <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  onClick={this.handleDrawerOpen}
+                  edge="start"
+                  className={clsx(classes.menuButton, {
+                    [classes.hide]: this.state.open,
+                  })}
+                >
+                  <MenuIcon />
+                </IconButton>
+                <Typography variant="h6" noWrap>
+                  Easy Parking
+                </Typography>
+              </Toolbar>
+            </AppBar>
+            <Drawer
+              variant="permanent"
+              className={clsx(classes.drawer, {
+                [classes.drawerOpen]: this.state.open,
+                [classes.drawerClose]: !this.state.open,
+              })}
+              classes={{
+                paper: clsx({
+                  [classes.drawerOpen]: this.state.open,
+                  [classes.drawerClose]: !this.state.open,
+                }),
+              }}
+            >
+              <div className={classes.toolbar}>
+                <IconButton onClick={this.handleDrawerClose}>
+                  {classes.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                </IconButton>
+              </div>
+              <Divider />
+              <List>
+                {['adicionar parking', 'editar parking', 'ver parking', 'eliminar parking'].map((text, index) => (
+                  <ListItem button key={text}>
+                    <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+                    <ListItemText primary={text} />
+                  </ListItem>
+                ))}
+              </List>
+              <Divider />
+              <List>
+                {['Adicionar Usuario', 'Editar Usuario', 'Eliminar Usuario'].map((text, index) => (
+                  <ListItem button key={text}>
+                    <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+                    <ListItemText primary={text} />
+                  </ListItem>
+                ))}
+              </List>
+            </Drawer>
+                <main className={classes.content}>
+                    <div className={classes.toolbar} />
+                    <div>
+                        <div>
+                            <ParticlesBg color="#7C00C8" type="cobweb" bg={true} />
+                        </div>
+                        
+                        <DraggableLayouts />
+                    </div>
+                </main>
+            </div>
             
-            <div>
-                <div>
-                <ParticlesBg color="#7C00C8" type="cobweb" bg={true} />
-                </div>
-            <Button variant="outlined" color="primary" onClick={this.handleOpen}>
-                Show backdrop
-            </Button>
-          </div>
+
         )
     }
 }
+const drawerWidth = 240;
+
 
 const styles = theme=> ({
-    modal: {
-
-      alignItems: 'center',
-      justifyContent: 'center',
-
-
-    },
-    paper: {
-      backgroundColor: "#ff00",
-      border: '2px solid #000',
-      boxShadow: theme.shadows[5],
-      padding: theme.spacing(2, 4, 3),
-
-      textAlign: "center",
-      margin: "0 auto",
-      padding: "1em",
-    }
+    root: {
+        display: 'flex',
+      },
+      appBar: {
+        zIndex: theme.zIndex.drawer + 1,
+        transition: theme.transitions.create(['width', 'margin'], {
+          easing: theme.transitions.easing.sharp,
+          duration: theme.transitions.duration.leavingScreen,
+        }),
+      },
+      appBarShift: {
+        marginLeft: drawerWidth,
+        width: `calc(100% - ${drawerWidth}px)`,
+        transition: theme.transitions.create(['width', 'margin'], {
+          easing: theme.transitions.easing.sharp,
+          duration: theme.transitions.duration.enteringScreen,
+        }),
+      },
+      menuButton: {
+        marginRight: 36,
+      },
+      hide: {
+        display: 'none',
+      },
+      drawer: {
+        width: drawerWidth,
+        flexShrink: 0,
+        whiteSpace: 'nowrap',
+      },
+      drawerOpen: {
+        width: drawerWidth,
+        transition: theme.transitions.create('width', {
+          easing: theme.transitions.easing.sharp,
+          duration: theme.transitions.duration.enteringScreen,
+        }),
+      },
+      drawerClose: {
+        transition: theme.transitions.create('width', {
+          easing: theme.transitions.easing.sharp,
+          duration: theme.transitions.duration.leavingScreen,
+        }),
+        overflowX: 'hidden',
+        width: theme.spacing(7) + 1,
+        [theme.breakpoints.up('sm')]: {
+          width: theme.spacing(9) + 1,
+        },
+      },
+      toolbar: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        padding: theme.spacing(0, 1),
+        // necessary for content to be below app bar
+        ...theme.mixins.toolbar,
+      },
+      content: {
+        flexGrow: 1,
+        padding: theme.spacing(3),
+      },
 });
 
 

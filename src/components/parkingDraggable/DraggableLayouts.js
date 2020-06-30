@@ -4,8 +4,7 @@ import { WidthProvider, Responsive } from "react-grid-layout";
 import _ from "lodash";
 import "../../styles/parkingDraggable/styles.css";
 
-import { Redirect } from 'react-router-dom';
-import Cookies from 'js-cookie';
+import Button from '@material-ui/core/Button';
 
 
 class DraggableLayouts extends Component {
@@ -109,7 +108,9 @@ class DraggableLayouts extends Component {
         return (
             <div> 
                 <div>
-                    <button onClick={this.onAddItem}>Add Item</button>
+                    <Button variant="outlined" color="primary" onClick={this.onAddItem}>
+                        Add Item
+                    </Button>
                     <ResponsiveReactGridLayout
                         onLayoutChange={this.onLayoutChange}
                         onBreakpointChange={this.onBreakpointChange}
