@@ -17,7 +17,7 @@ class AdminPage extends Component {
         this.state = {
             authenticated: false,
             toSignup: false,
-            email: Cookies.getJSON('user').email,
+            email: "",
             password: "",
             open: false
         }
