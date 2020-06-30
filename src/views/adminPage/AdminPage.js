@@ -30,8 +30,6 @@ class AdminPage extends Component {
                 <Redirect to='/'></Redirect>
             )
         } else {
-            console.log("cookie: ", validateSession.email);
-            this.setState({email:validateSession.email});
             console.log("email:", this.state.email);
             console.log("Access granted, session active!");
         }
