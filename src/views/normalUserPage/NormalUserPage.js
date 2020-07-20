@@ -30,7 +30,7 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 
 
-class AdminPage extends Component {
+class NormalUserPage extends Component {
 
     constructor(props) {
         super(props);
@@ -57,7 +57,7 @@ class AdminPage extends Component {
             this.setState({authenticated : true});
 
         } else {
-          if(validateSession.rol != "administrador"){
+          if(validateSession.rol != "usuario normal"){
             this.setState({authenticated : true});
           }else{
             this.setState({user : validateSession});
@@ -139,7 +139,7 @@ class AdminPage extends Component {
               </div>
               <Divider />
               <List>
-                {['adicionar parking', 'editar parking', 'ver parking', 'eliminar parking'].map((text, index) => (
+                {['ver parking'].map((text, index) => (
                   <ListItem button key={text}>
                     <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
                     <ListItemText primary={text} />
@@ -147,20 +147,12 @@ class AdminPage extends Component {
                 ))}
               </List>
               <Divider />
-              <List>
-                {['Adicionar Usuario', 'Editar Usuario', 'Eliminar Usuario'].map((text, index) => (
-                  <ListItem button key={text}>
-                    <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                    <ListItemText primary={text} />
-                  </ListItem>
-                ))}
-              </List>
             </Drawer>
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
                     <div>
                         <div>
-                            {this.state.authenticated && <Redirect from="/adminpage" to='/login'></Redirect>}
+                            {this.state.authenticated && <Redirect from="/normalUserPage" to='/login'></Redirect>}
                         </div>
                         
                         <DraggableLayouts />
@@ -241,4 +233,4 @@ const styles = theme=> ({
 });
 
 
-export default withStyles(styles, { withTheme: true })(AdminPage);
+export default withStyles(styles, { withTheme: true })(NormalUserPage);

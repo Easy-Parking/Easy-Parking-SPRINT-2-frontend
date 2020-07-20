@@ -35,7 +35,9 @@ class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            authenticated: false,
+            authenticatedAdmin1: false,
+            authenticatedAdmin2: false,
+            authenticatedUser: false,
             email: "",
             password: "",
             showPassword: false,
@@ -46,6 +48,10 @@ class Login extends Component {
         this.handleMouseDownPassword = this.handleMouseDownPassword.bind(this);
         this.loginUser = this.loginUser.bind(this);
 
+    }
+
+    componentDidMount(){
+      console.log("entro devuelta : ", this.state.authenticated);
     }
 
     handleChange(e) {
@@ -67,31 +73,55 @@ class Login extends Component {
       } else {
           if (this.state.email.includes('@')) {
               if (this.state.password.length >= 6) {
-                  let res = await axios.get('https://backend-easyparking.herokuapp.com/users/byEmail/'+this.state.email)
+                  let res = await axios.get('http://localhost:8080/users/byEmail/'+this.state.email)
                     .then(response => {
                       console.log(response.status);
                       console.log(response.data);
                         if(response.status===200){
-                          Cookies.set('user', response.data);
-                          Swal.fire(
-                              'Bienvenido '+response.data.name,
-                              'Sera redireccionado al dashboar de '+response.data.rol,
-                              'success'
-                          ).then(function (result)  {
-                              if (result.value) {
-                                  
-                              }
-                            });
+                          if(response.data.password == this.state.password){
                             
+                            if(response.data.rol == "administrador"){
+                              this.setCookies(response.data)
+                              this.setState({ authenticatedAdmin1: true });
+                              Swal.fire(
+                                  'Bienvenido '+response.data.name,
+                                  'Sera redireccionado al dashboar de '+response.data.rol,
+                                  'success'
+                              )
+                            }
+                            else if(response.data.rol == "administrador 2"){
+                              this.setCookies(response.data)
+                              this.setState({ authenticatedAdmin2: true });
+                              Swal.fire(
+                                  'Bienvenido '+response.data.name,
+                                  'Sera redireccionado al dashboar de '+response.data.rol,
+                                  'success'
+                              )
+                            }
+                            else if(response.data.rol == "usuario normal"){
+                              this.setCookies(response.data)
+                              this.setState({ authenticatedUser: true });
+                              Swal.fire(
+                                  'Bienvenido '+response.data.name,
+                                  'Sera redireccionado al dashboar de '+response.data.rol,
+                                  'success'
+                              )
+                            }
+
+                          }else{
+                            Swal.fire("Signup failed!", "Password incorrect", "error");
+                          }
+
                         }else{
                           Swal.fire("Signup failed!", "try again later", "error");
                         }
                       
                     },
-                    this.setState({ authenticated: true })
+                    
                     )
                     .catch(function (error) {
                       console.log(error);
+                      Swal.fire("Signup failed!", "user email/password invalid", "error");
                     });
               } else {
                   Swal.fire("Short password!", "The password should be at least 6 digits", "error");
@@ -100,9 +130,10 @@ class Login extends Component {
               Swal.fire("Not an email!", "Please, type a correct email", "error");
           }
       }
+  }
 
-      
-
+  async setCookies(data){
+    Cookies.set('user', data)
   }
 
 
@@ -111,8 +142,10 @@ class Login extends Component {
         const { classes } = this.props;
         return (
           <div>
-            {this.state.authenticated && <Redirect to='/adminpage'></Redirect>}
-            <ParticlesBg color="#7C00C8" type="circle" bg={true} />
+            {this.state.authenticatedAdmin1 && <Redirect to='/adminpage'></Redirect>}
+            {this.state.authenticatedAdmin2 && <Redirect to='/adminpage2'></Redirect>}
+            {this.state.authenticatedUser && <Redirect to='/normalUserPage'></Redirect>}
+            <ParticlesBg color="#7C00C8 " num={10} type="square" bg={true} />
             <Container component="main" maxWidth="xs">
               <CssBaseline />
               <div className={classes.paper}>
@@ -140,7 +173,7 @@ class Login extends Component {
                   <FormControl className={classes.margin, classes.textField} variant="outlined">
                     <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
                     <OutlinedInput
-                      id="outlined-adornment-password"
+                      id="outlined-adornment-password-login"
                       type={this.state.showPassword ? 'text' : 'password'}
                       value={this.state.password}
                       name="password"
@@ -221,7 +254,7 @@ const styles = theme => ({
     marginTop: theme.spacing(1),
   },
   link: {
-    color: "white",
+    color: "black",
   }
 });
 

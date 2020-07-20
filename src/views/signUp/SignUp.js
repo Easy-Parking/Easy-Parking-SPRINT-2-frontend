@@ -128,7 +128,7 @@ class SignUp extends Component {
         return (
             <div>
                 {this.state.toSignup && <Redirect to='/login'></Redirect>}
-                <ParticlesBg color="#7C00C8" type="circle" bg={true} />
+                <ParticlesBg color="#7C00C8 " num={10} type="square" bg={true} />
                 <Container component="main" maxWidth="xs">
                     <CssBaseline />
                     <div className={classes.paper}>
@@ -287,7 +287,7 @@ const styles = theme => ({
         marginTop: theme.spacing(1),
     },
     link: {
-        color: "white",
+        color: "black",
     }
 });
 
