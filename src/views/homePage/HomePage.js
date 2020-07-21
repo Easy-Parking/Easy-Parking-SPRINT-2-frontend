@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Cookies from 'js-cookie';
 import { Redirect } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 import { withStyles } from "@material-ui/core/styles";
 import Container from '@material-ui/core/Container';
@@ -27,8 +28,11 @@ class HomePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      authenticated: false,
+      authenticated: true,
       toSignup: false,
+      dashboardAdmin: false,
+      dashboardAdmin2: false,
+      dashboardUserNormal: false,
       email: "",
       password: "",
       open: false
@@ -36,12 +40,53 @@ class HomePage extends Component {
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.loginRedirect = this.loginRedirect.bind(this);
+    this.dashboardRedirect = this.dashboardRedirect.bind(this);
 
   }
+
+  async componentDidMount() {
+    const validateSession = Cookies.getJSON('user');
+    console.log("user", validateSession);
+    console.log("respuesta ", validateSession == undefined)
+    if (validateSession == undefined) {
+        console.log("entro xd ", true)
+        this.setState({authenticated : false});
+
+    } else{
+        this.setState({user : validateSession});
+        console.log("user", validateSession);
+        console.log("Access granted, session active!");
+      } 
+}
+
+  async logout() {
+    await Cookies.remove('user');
+    Swal.fire(
+      'Sesion Finalizada',
+      'success'
+    );
+    this.setState({authenticated : false});
+  }  
 
   async loginRedirect() {
-    this.setState({toSignup : true});
+    if(this.state.authenticated){ //ya esta logueado
+      this.logout();
+    }else{
+      this.setState({toSignup : true});
+    }
   }
+
+  async dashboardRedirect() {
+    if(this.state.user.rol == "administrador"){
+      this.setState({ dashboardAdmin: true });
+    }
+    else if(this.state.user.rol == "administrador 2"){
+      this.setState({ dashboardAdmin2: true });
+    }
+    else if(this.state.user.rol == "usuario normal"){
+      this.setState({ dashboardUserNormal: true });
+    }
+  };
 
   handleOpen() {
     this.setState({ open: true });
@@ -53,9 +98,21 @@ class HomePage extends Component {
 
   render() {
     const { classes } = this.props;
+    let login;
+    let buttonDashboard;
+    if (this.state.authenticated) {
+      login = "Logout";
+      buttonDashboard = <Button onClick={this.dashboardRedirect} color="primary" variant="contained" className={classes.link}> Dashboard </Button> ;
+    } else {
+      login = "Login";
+      buttonDashboard = "";
+    }
     return (
       <div>
         {this.state.toSignup && <Redirect to='/login'></Redirect>}
+        {this.state.dashboardAdmin && <Redirect to='/adminpage'></Redirect>}
+        {this.state.dashboardAdmin2 && <Redirect to='/adminpage2'></Redirect>}
+        {this.state.dashboardUserNormal && <Redirect to='/normalUserPage'></Redirect>}
         <CssBaseline />
         <AppBar position = "sticky"  color="default" elevation={0} className={classes.appBar}>
           <Toolbar className={classes.toolbar}>
@@ -63,8 +120,9 @@ class HomePage extends Component {
             <Typography variant="h6" color="inherit" noWrap className={classes.toolbarTitle}>
               EASY PARKING
             </Typography>
-            <Button onClick={this.loginRedirect} color="primary" variant="outlined" className={classes.link}>
-              Login
+            {buttonDashboard}
+            <Button onClick={this.loginRedirect} color="secondary" variant="contained" className={classes.link}>
+              {login}
           </Button>
           </Toolbar>
         </AppBar>

@@ -115,7 +115,8 @@ class NormalUserPage extends Component {
                   Easy Parking 
                 </Typography>
                 
-                <Button className={classes.login} onClick={this.logout} color="inherit">Log out <br/> {this.state.user.name}</Button>
+                <Button className={classes.login} onClick={this.logout} color="secondary" variant="contained">Log out <br/> {this.state.user.name}</Button>
+                
 
               </Toolbar>
             </AppBar>

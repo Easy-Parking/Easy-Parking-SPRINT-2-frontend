@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import clsx from 'clsx';
 
 import DraggableLayouts from "../../components/parkingDraggable/DraggableLayouts";
+import AdicionarPArking from "../../components/parking/AdicionarParking";
+
 import Swal from 'sweetalert2';
 
 import Cookies from 'js-cookie';
@@ -40,12 +42,15 @@ class AdminPage extends Component {
             email: "",
             password: "",
             user: "",
+            selectedIndex: 0,
+            adicionarParking: false,
             open: false
         }
 
         this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
         this.handleDrawerClose = this.handleDrawerClose.bind(this);
         this.logout = this.logout.bind(this);
+        this.handleListItemClick = this.handleListItemClick.bind(this);
     }
 
     async componentDidMount() {
@@ -67,6 +72,14 @@ class AdminPage extends Component {
 
         }
     }
+
+    handleListItemClick(index) {
+      console.log(this.state.selectedIndex , index)
+      if(index == 0){ //adicionar parking
+        this.setState({adicionarParking : !this.state.adicionarParking});
+      }
+      this.handleDrawerClose();
+    };
 
     async logout() {
       await Cookies.remove('user');
@@ -115,7 +128,7 @@ class AdminPage extends Component {
                   Easy Parking 
                 </Typography>
                 
-                <Button className={classes.login} onClick={this.logout} color="inherit">Log out <br/> {this.state.user.name}</Button>
+                <Button className={classes.login} onClick={this.logout} color="secondary" variant="contained">Log out <br/> {this.state.user.name}</Button>
 
               </Toolbar>
             </AppBar>
@@ -140,7 +153,11 @@ class AdminPage extends Component {
               <Divider />
               <List>
                 {['adicionar parking', 'editar parking', 'ver parking', 'eliminar parking'].map((text, index) => (
-                  <ListItem button key={text}>
+                  <ListItem 
+                    button key={text}
+                    selected={this.state.selectedIndex === index}
+                    onClick={this.handleListItemClick.bind(this,index)}
+                  >
                     <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
                     <ListItemText primary={text} />
                   </ListItem>
@@ -161,9 +178,11 @@ class AdminPage extends Component {
                     <div>
                         <div>
                             {this.state.authenticated && <Redirect from="/adminpage" to='/login'></Redirect>}
+
+                            {this.state.adicionarParking && <AdicionarPArking user = {this.state.user} />}
                         </div>
                         
-                        <DraggableLayouts />
+                        
                     </div>
                 </main>
             </div>
