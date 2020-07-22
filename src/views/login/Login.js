@@ -74,7 +74,7 @@ class Login extends Component {
       } else {
           if (this.state.email.includes('@')) {
               if (this.state.password.length >= 6) {
-                  let res = await axios.get('http://localhost:8080/users/byEmail/'+this.state.email)
+                  let res = await axios.get('https://backend-easyparking.herokuapp.com/users/byEmail/'+this.state.email)
                     .then(response => {
                       console.log(response.status);
                       console.log(response.data);

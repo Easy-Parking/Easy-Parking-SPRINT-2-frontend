@@ -11,7 +11,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 
-class DraggableLayouts extends Component {
+class EditingDraggableLayouts extends Component {
 
     static defaultProps = {
         className: "layout",
@@ -40,109 +40,12 @@ class DraggableLayouts extends Component {
         this.onAddItem = this.onAddItem.bind(this);
         this.onBreakpointChange = this.onBreakpointChange.bind(this);
         this.onLayoutChange = this.onLayoutChange.bind(this);
-        this.registerParking = this.registerParking.bind(this);
-        this.changeParkingSlots = this.changeParkingSlots.bind(this);
-        this.changeParkings = this.changeParkings.bind(this);
-        this.setCookiesEd = this.setCookiesEd.bind(this);
+        this.saveParking = this.saveParking.bind(this);
+
     }
 
+    saveParking(){
 
-    async changeParkingSlots(park){
-      this.setState({parking: {
-        name: this.props.name,
-        piso: this.props.piso,
-        slots: park
-      }})
-    }
-    async changeParkings(){
-      var parkingsAll = this.props.user.parkings;
-      var parking = this.state.parking;
-      if(parkingsAll.length !== 0){
-        for (var item2 of parkingsAll) {
-          this.setState({ 
-            parkings: this.state.parkings.concat(item2) 
-          })
-        }
-        this.setState({ 
-          parkings: this.state.parkings.concat(parking) 
-        })
-      }else{
-        this.setState({ 
-          parkings: this.state.parkings.concat(parking) 
-        })
-      }
-    }
-
-    async registerParking() {
-      var slotsUser = [];
-      // cambiar variable static a static1
-      var slotsSystem = this.state.layout.map( item => { 
-        // lo guardas temporalmente
-        var temporal = item.static;
-        // eliminas el valor que ya no quieres
-        delete item.static;
-        // creas el valor nuevo.
-        item.static1 = temporal;
-        return item; 
-      });
-
-      if(slotsSystem !== null){
-        if (slotsSystem.length !== 0) {
-          for (var item of slotsSystem) {
-            slotsUser.push(item);
-          }
-        }else{
-          slotsUser = slotsSystem;
-        }
-      }else {
-        slotsUser = slotsSystem;
-      }
-
-      if (this.state.parking.name === "" ||
-        this.state.parking.piso === "") {
-        Swal.fire("Faltan campos!", "Por favor, llene el nombre o piso faltante y regrese", "error");
-      } else {
-
-        await this.changeParkingSlots(slotsUser);
-        await this.changeParkings();
-
-        let res = await axios.post('https://backend-easyparking.herokuapp.com/users/save/', {
-          name: this.state.user.name,
-          rol: this.state.user.rol,
-          email: this.state.user.email,
-          password: this.state.user.password,
-          parkings: this.state.parkings
-        })
-          .then(function (response) {
-
-            if (response.status === 200) {
-              Swal.fire(
-                'parking creado satisfactoriamente!',
-                '',
-                'success'
-              )
-            } else {
-              Swal.fire("error", "error en el servidor, intente de nuevo", "error");
-            }
-
-          })
-          .catch(function (error) {
-            console.log(error);
-          })
-          this.setCookiesEd();
-          ;
-      }
-    }
-
-    async setCookiesEd(){
-      Cookies.remove('user', { path: '' });
-      Cookies.set('user', { 
-        name: this.state.user.name,
-        rol: this.state.user.rol,
-        email: this.state.user.email,
-        password: this.state.user.password,
-        parkings: this.state.parkings
-      });
     }
 
     createElement(el) {
@@ -224,7 +127,7 @@ class DraggableLayouts extends Component {
                     <Button variant="outlined" color="primary" onClick={this.onAddItem}>
                         Add Item
                     </Button>
-                    <Button variant="outlined" color="primary" onClick={this.registerParking}>
+                    <Button variant="outlined" color="primary" onClick={this.saveParking}>
                         Guardar Parking
                     </Button>
                     <ResponsiveReactGridLayout

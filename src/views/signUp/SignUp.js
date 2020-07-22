@@ -83,7 +83,7 @@ class SignUp extends Component {
         } else {
             if (this.state.email.includes('@')) {
                 if (this.state.password.length >= 6) {
-                    let res = await axios.post('http://localhost:8080/users/save/', {
+                    let res = await axios.post('https://backend-easyparking.herokuapp.com/users/save/', {
                         name : this.state.firstName +" "+ this.state.lastName,
                         rol :  this.state.rol,
                         email : this.state.email,
