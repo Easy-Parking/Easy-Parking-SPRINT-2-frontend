@@ -99,7 +99,12 @@ class AdicionarParking extends Component {
                     <div>
                         Darle en "ADD ITEM" y empezar a acomodar los objetos modelando su esquema de Parqueadero
                         de acuerdo a su arquitectura o planos.
-                        <DraggableLayouts />
+                        <div>
+                          <DraggableLayouts name = {this.state.nameParking} piso = {this.state.pisoParking} user = {this.state.user}/>
+                        </div>
+                        <br/>
+                        <br/>
+                        
                     </div>
                 )
             default:

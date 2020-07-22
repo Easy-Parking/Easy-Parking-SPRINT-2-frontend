@@ -30,6 +30,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import { getSourceMapRange } from 'typescript';
 
 
 class AdminPage extends Component {
@@ -56,13 +57,13 @@ class AdminPage extends Component {
     async componentDidMount() {
         const validateSession = Cookies.getJSON('user');
         console.log("user", validateSession);
-        console.log("respuesta ", validateSession == undefined)
-        if (validateSession == undefined) {
+        console.log("respuesta ", validateSession === undefined)
+        if (validateSession === undefined) {
             console.log("entro xd ", true)
             this.setState({authenticated : true});
 
         } else {
-          if(validateSession.rol != "administrador"){
+          if(validateSession.rol !== "administrador"){
             this.setState({authenticated : true});
           }else{
             this.setState({user : validateSession});
@@ -75,14 +76,14 @@ class AdminPage extends Component {
 
     handleListItemClick(index) {
       console.log(this.state.selectedIndex , index)
-      if(index == 0){ //adicionar parking
+      if(index === 0){ //adicionar parking
         this.setState({adicionarParking : !this.state.adicionarParking});
       }
-      this.handleDrawerClose();
+      //this.handleDrawerClose();
     };
 
     async logout() {
-      await Cookies.remove('user');
+      await Cookies.remove('user', { path: '' });
       Swal.fire(
         'Sesion Finalizada',
         'success'

@@ -47,8 +47,8 @@ class HomePage extends Component {
   async componentDidMount() {
     const validateSession = Cookies.getJSON('user');
     console.log("user", validateSession);
-    console.log("respuesta ", validateSession == undefined)
-    if (validateSession == undefined) {
+    console.log("respuesta ", validateSession === undefined)
+    if (validateSession === undefined) {
         console.log("entro xd ", true)
         this.setState({authenticated : false});
 
@@ -60,7 +60,7 @@ class HomePage extends Component {
 }
 
   async logout() {
-    await Cookies.remove('user');
+    await Cookies.remove('user', { path: '' });
     Swal.fire(
       'Sesion Finalizada',
       'success'
@@ -77,13 +77,13 @@ class HomePage extends Component {
   }
 
   async dashboardRedirect() {
-    if(this.state.user.rol == "administrador"){
+    if(this.state.user.rol === "administrador"){
       this.setState({ dashboardAdmin: true });
     }
-    else if(this.state.user.rol == "administrador 2"){
+    else if(this.state.user.rol === "administrador 2"){
       this.setState({ dashboardAdmin2: true });
     }
-    else if(this.state.user.rol == "usuario normal"){
+    else if(this.state.user.rol === "usuario normal"){
       this.setState({ dashboardUserNormal: true });
     }
   };

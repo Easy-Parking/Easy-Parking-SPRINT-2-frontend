@@ -6,16 +6,20 @@ import "../../styles/parkingDraggable/styles.css";
 
 import Button from '@material-ui/core/Button';
 
+import Swal from 'sweetalert2';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+
 
 class DraggableLayouts extends Component {
 
     static defaultProps = {
         className: "layout",
-        cols: { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 },
+        cols: { lg: 12, md: 10, sm: 6, xs: 20, xxs: 2 },
         rowHeight: 100,
-        verticalCompact: false
-        
-
+        rowWidth: 100,
+        verticalCompact: false,
+        compactType: 'horizontal'
       };
     
       constructor(props) {
@@ -23,12 +27,122 @@ class DraggableLayouts extends Component {
     
         this.state = {
           items: [],
-          newCounter: 0
+          newCounter: 0,
+          user: this.props.user,
+          // objeto que guardara el parqueadero del usuario
+          parking: {
+                    name: this.props.name,
+                    piso: this.props.piso,
+                    slots: []
+          },
+          parkings: []
         };
         this.onAddItem = this.onAddItem.bind(this);
         this.onBreakpointChange = this.onBreakpointChange.bind(this);
         this.onLayoutChange = this.onLayoutChange.bind(this);
-        
+        this.registerParking = this.registerParking.bind(this);
+        this.changeParkingSlots = this.changeParkingSlots.bind(this);
+        this.changeParkings = this.changeParkings.bind(this);
+        this.setCookiesEd = this.setCookiesEd.bind(this);
+    }
+
+
+    async changeParkingSlots(park){
+      this.setState({parking: {
+        name: this.props.name,
+        piso: this.props.piso,
+        slots: park
+      }})
+    }
+    async changeParkings(){
+      var parkingsAll = this.props.user.parkings;
+      var parking = this.state.parking;
+      if(parkingsAll.length !== 0){
+        for (var item2 of parkingsAll) {
+          this.setState({ 
+            parkings: this.state.parkings.concat(item2) 
+          })
+        }
+        this.setState({ 
+          parkings: this.state.parkings.concat(parking) 
+        })
+      }else{
+        this.setState({ 
+          parkings: this.state.parkings.concat(parking) 
+        })
+      }
+    }
+
+    async registerParking() {
+      var slotsUser = [];
+      // cambiar variable static a static1
+      var slotsSystem = this.state.layout.map( item => { 
+        // lo guardas temporalmente
+        var temporal = item.static;
+        // eliminas el valor que ya no quieres
+        delete item.static;
+        // creas el valor nuevo.
+        item.static1 = temporal;
+        return item; 
+      });
+
+      if(slotsSystem !== null){
+        if (slotsSystem.length !== 0) {
+          for (var item of slotsSystem) {
+            slotsUser.push(item);
+          }
+        }else{
+          slotsUser = slotsSystem;
+        }
+      }else {
+        slotsUser = slotsSystem;
+      }
+
+      if (this.state.parking.name === "" ||
+        this.state.parking.piso === "") {
+        Swal.fire("Faltan campos!", "Por favor, llene el nombre o piso faltante y regrese", "error");
+      } else {
+
+        await this.changeParkingSlots(slotsUser);
+        await this.changeParkings();
+
+        let res = await axios.post('http://localhost:8080/users/save/', {
+          name: this.state.user.name,
+          rol: this.state.user.rol,
+          email: this.state.user.email,
+          password: this.state.user.password,
+          parkings: this.state.parkings
+        })
+          .then(function (response) {
+
+            if (response.status === 200) {
+              Swal.fire(
+                'parking creado satisfactoriamente!',
+                '',
+                'success'
+              )
+            } else {
+              Swal.fire("error", "error en el servidor, intente de nuevo", "error");
+            }
+
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+          this.setCookiesEd();
+          ;
+      }
+    }
+
+    async setCookiesEd(){
+      Cookies.remove('user', { path: '' });
+      Cookies.set('user', { 
+        name: this.state.user.name,
+        rol: this.state.user.rol,
+        email: this.state.user.email,
+        password: this.state.user.password,
+        parkings: this.state.parkings
+      });
     }
 
     createElement(el) {
@@ -65,7 +179,6 @@ class DraggableLayouts extends Component {
     
       onAddItem() {
         /*eslint no-console: 0*/
-        console.log("adding", "n" + this.state.newCounter);
         this.setState({
           // Add a new item. It must have a unique key!
           items: this.state.items.concat({
@@ -76,6 +189,7 @@ class DraggableLayouts extends Component {
             h: 1,
             minW: 0.2,
             minH: 0.2,
+            
           }),
           // Increment the counter to ensure key is always unique.
           newCounter: this.state.newCounter + 1
@@ -97,7 +211,6 @@ class DraggableLayouts extends Component {
       }
     
       onRemoveItem(i) {
-        console.log("removing", i);
         this.setState({ items: _.reject(this.state.items, { i: i }) });
         this.setState({ newCounter: this.state.newCounter-1});
       }
@@ -110,6 +223,9 @@ class DraggableLayouts extends Component {
                 <div>
                     <Button variant="outlined" color="primary" onClick={this.onAddItem}>
                         Add Item
+                    </Button>
+                    <Button variant="outlined" color="primary" onClick={this.registerParking}>
+                        Guardar Parking
                     </Button>
                     <ResponsiveReactGridLayout
                         onLayoutChange={this.onLayoutChange}

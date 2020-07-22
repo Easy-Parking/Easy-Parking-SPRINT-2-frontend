@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import { withStyles } from "@material-ui/core/styles";
+import clsx from 'clsx';
 
 import Swal from 'sweetalert2';
 import axios from 'axios';
@@ -82,11 +83,12 @@ class SignUp extends Component {
         } else {
             if (this.state.email.includes('@')) {
                 if (this.state.password.length >= 6) {
-                    let res = await axios.post('https://backend-easyparking.herokuapp.com/users/save/', {
+                    let res = await axios.post('http://localhost:8080/users/save/', {
                         name : this.state.firstName +" "+ this.state.lastName,
                         rol :  this.state.rol,
                         email : this.state.email,
-                        password : this.state.password
+                        password : this.state.password,
+                        parkings : []
                       })
                       .then(function (response) {
                         console.log(response.status);
@@ -180,7 +182,7 @@ class SignUp extends Component {
                                         onChange={this.handleChange}
                                     />
                                 </Grid>
-                                <FormControl className={classes.margin, classes.textField} variant="outlined">
+                                <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
                                     <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
                                     <OutlinedInput
                                         id="outlined-adornment-password"
@@ -206,7 +208,7 @@ class SignUp extends Component {
                                     />
                                 </FormControl>
 
-                                <FormControl variant="outlined" className={classes.margin, classes.textField}>
+                                <FormControl variant="outlined" className={clsx(classes.margin, classes.textField)}>
                                     <InputLabel id="demo-simple-select-outlined-label">Rol</InputLabel>
                                     <Select
                                         labelId="demo-simple-select-outlined-label"

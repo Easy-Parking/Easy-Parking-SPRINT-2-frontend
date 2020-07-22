@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import clsx from 'clsx';
 
-import DraggableLayouts from "../../components/parkingDraggable/DraggableLayouts";
 import Swal from 'sweetalert2';
 
 import Cookies from 'js-cookie';
@@ -51,13 +50,13 @@ class NormalUserPage extends Component {
     async componentDidMount() {
         const validateSession = Cookies.getJSON('user');
         console.log("user", validateSession);
-        console.log("respuesta ", validateSession == undefined)
-        if (validateSession == undefined) {
+        console.log("respuesta ", validateSession === undefined)
+        if (validateSession === undefined) {
             console.log("entro xd ", true)
             this.setState({authenticated : true});
 
         } else {
-          if(validateSession.rol != "usuario normal"){
+          if(validateSession.rol !== "usuario normal"){
             this.setState({authenticated : true});
           }else{
             this.setState({user : validateSession});
@@ -69,7 +68,7 @@ class NormalUserPage extends Component {
     }
 
     async logout() {
-      await Cookies.remove('user');
+      await Cookies.remove('user', { path: '' });
       Swal.fire(
         'Sesion Finalizada',
         'success'
@@ -155,8 +154,6 @@ class NormalUserPage extends Component {
                         <div>
                             {this.state.authenticated && <Redirect from="/normalUserPage" to='/login'></Redirect>}
                         </div>
-                        
-                        <DraggableLayouts />
                     </div>
                 </main>
             </div>

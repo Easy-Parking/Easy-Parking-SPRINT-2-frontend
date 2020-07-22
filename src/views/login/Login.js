@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import clsx from 'clsx';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -78,9 +79,9 @@ class Login extends Component {
                       console.log(response.status);
                       console.log(response.data);
                         if(response.status===200){
-                          if(response.data.password == this.state.password){
+                          if(response.data.password === this.state.password){
                             
-                            if(response.data.rol == "administrador"){
+                            if(response.data.rol === "administrador"){
                               this.setCookies(response.data)
                               this.setState({ authenticatedAdmin1: true });
                               Swal.fire(
@@ -89,7 +90,7 @@ class Login extends Component {
                                   'success'
                               )
                             }
-                            else if(response.data.rol == "administrador 2"){
+                            else if(response.data.rol === "administrador 2"){
                               this.setCookies(response.data)
                               this.setState({ authenticatedAdmin2: true });
                               Swal.fire(
@@ -98,7 +99,7 @@ class Login extends Component {
                                   'success'
                               )
                             }
-                            else if(response.data.rol == "usuario normal"){
+                            else if(response.data.rol === "usuario normal"){
                               this.setCookies(response.data)
                               this.setState({ authenticatedUser: true });
                               Swal.fire(
@@ -170,7 +171,7 @@ class Login extends Component {
                     value={this.state.email} 
                     onChange={this.handleChange}
                   />
-                  <FormControl className={classes.margin, classes.textField} variant="outlined">
+                  <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
                     <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
                     <OutlinedInput
                       id="outlined-adornment-password-login"
@@ -243,7 +244,7 @@ const styles = theme => ({
     margin: theme.spacing(3, 0, 2),
   },
   margin: {
-    margin: theme.spacing(1),
+    margin: theme.spacing(0),
   },
   textField: {
     width: '100%',
